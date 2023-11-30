@@ -25,3 +25,15 @@ ADD backend/ /home/user/app/backend
 
 USER user
 CMD gunicorn {{project_name}}.wsgi --log-file - -b 0.0.0.0:8000 --reload
+
+FROM node:latest
+
+WORKDIR /app
+
+COPY ["package.json", "yarn.lock", "/app/"]
+RUN yarn
+
+COPY [".", "/app"]
+
+# Start
+CMD ["npm", "build"]
