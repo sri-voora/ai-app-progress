@@ -7,8 +7,10 @@ from keras.applications.vgg16 import preprocess_input
 
 num_classes = 2
 
-image_resize = 224
+# unzip data
+resize = 224
 
+# !change increase training data
 batch_size_training = 100
 batch_size_validation = 100
 
@@ -16,6 +18,7 @@ data_generator = ImageDataGenerator(
     preprocessing_function=preprocess_input,
 )
 
+# VGG16 validation model
 validation_generator = data_generator.flow_from_directory(
     '##',
     target_size=(image_resize, image_resize),
@@ -34,15 +37,17 @@ model.add(Dense(num_classes, activation='softmax'))
 
 
 
-
+# Model layers
 model.layers
 
 model.layers[0].trainable = False
 
 model.summary()
 
+# Loss
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
+# Epoch cycles
 steps_per_epoch_training = len(train_generator)
 steps_per_epoch_validation = len(validation_generator)
 num_epochs = 2
@@ -63,6 +68,7 @@ from keras.models import load_model
 resnet_model=load_model('classifier_resnet_model.h5')
 vgg16_model=load_model('classifier_vgg_model.h5')
 
+# Turn predictions into graph
 data_generator_test = ImageDataGenerator()
 
 test_generator = data_generator_test.flow_from_directory(
@@ -74,6 +80,7 @@ score_vgg16 = vgg16_model.evaluate_generator(test_generator, verbose=1)
 print("loss:", score_vgg16[0])
 print("accuracy:", score_vgg16[1])
 
+# Accuracy score
 score_resnet = resnet_model.evaluate_generator(test_generator, verbose=1)
 print("loss:", score_resnet[0])
 print("accuracy:", score_resnet[1])
