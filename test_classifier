@@ -1,0 +1,119 @@
+import tensorflow as tf
+from keras.preprocessing.image import ImageDataGenerator 
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.applications import VGG16
+from keras.applications.vgg16 import preprocess_input
+import sklearn
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
+
+num_classes = 2
+
+image_resize = 224
+
+# batch sizes for training
+batch_size_training = 100
+batch_size_validation = 100
+
+data_generator = ImageDataGenerator(
+    preprocessing_function=preprocess_input,
+)
+
+# validation training
+# categorical model
+
+# model type
+model = Sequential()
+
+# probability predictions
+model.add(Dense(num_classes, activation='softmax'))
+
+# model layers
+model.layers
+
+model.layers[0].trainable = False
+
+
+
+# loss compiler
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# epochs
+steps_per_epoch_training = len(list[train_generator])
+steps_per_epoch_validation = len(list[validation_generator])
+num_epochs = 2
+
+fit_history = model.fit_generator(
+    #train_generator,
+
+    steps_per_epoch=steps_per_epoch_training,
+    epochs=num_epochs,
+    validation_data=validation_generator,
+    validation_steps=steps_per_epoch_validation,
+    verbose=1,
+)
+
+model.save('classifier_vgg_model.h5')
+
+# resnet and vgg16 models
+from keras.models import load_model
+resnet_model=load_model('classifier_resnet_model.h5')
+vgg16_model=load_model('classifier_vgg_model.h5')
+
+data_generator_test = ImageDataGenerator()
+
+# image resize
+test_generator = data_generator_test.flow_from_directory(
+    # ,
+    target_size=(image_resize, image_resize),
+    shuffle=False)
+
+# model comparison scores
+score_vgg16 = vgg16_model.evaluate_generator(test_generator, verbose=1)
+print("loss:", score_vgg16[0])
+print("accuracy:", score_vgg16[1])
+
+
+
+score_resnet = resnet_model.evaluate_generator(test_generator, verbose=1)
+print("loss:", score_resnet[0])
+print("accuracy:", score_resnet[1])
+
+
+train_labels = os.listdir(train_path)
+
+
+train_labels.sort()
+
+if not os.path.exists(test_path):
+    os.makedirs(test_path)
+
+
+models = []
+models.append(('LR', LogisticRegression(random_state=seed)))
+models.append(('LDA', LinearDiscriminantAnalysis()))
+models.append(('KNN', KNeighborsClassifier()))
+models.append(('CART', DecisionTreeClassifier(random_state=seed)))
+models.append(('RF', RandomForestClassifier(n_estimators=num_trees, random_state=seed)))
+models.append(('NB', GaussianNB()))
+models.append(('SVM', SVC(random_state=seed)))
+
+results = []
+names   = []
+
+h5f_data  = h5py.File(h5_data, 'r')
+h5f_label = h5py.File(h5_labels, 'r')
+
+global_features_string = h5f_data['dataset_1']
+global_labels_string   = h5f_label['dataset_1']
+
+# features array
+global_features = np.array(global_features_string)
+
